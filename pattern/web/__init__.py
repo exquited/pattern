@@ -991,8 +991,9 @@ RE_GOOGLE_DATE = re.compile("^([A-Z][a-z]{2} [0-9]{1,2}, [0-9]{4}) {0,1}...")
 
 class Google(SearchEngine):
 
-    def __init__(self, license=None, throttle=0.5, language=None):
+    def __init__(self, license=None, throttle=0.5, language=None, cx=None):
         SearchEngine.__init__(self, license or GOOGLE_LICENSE, throttle, language)
+        self.cx = cx or GOOGLE_CUSTOM_SEARCH_ENGINE
 
     def search(self, query, type=SEARCH, start=1, count=10, sort=RELEVANCY, size=None, cached=True, **kwargs):
         """ Returns a list of results from Google for the given query.
@@ -1008,7 +1009,7 @@ class Google(SearchEngine):
         # 1) Create request URL.
         url = URL(GOOGLE, query={
               "key": self.license or GOOGLE_LICENSE,
-               "cx": GOOGLE_CUSTOM_SEARCH_ENGINE,
+               "cx": self.cx or GOOGLE_CUSTOM_SEARCH_ENGINE,
                 "q": query,
             "start": 1 + (start-1) * count,
               "num": min(count, 10),
